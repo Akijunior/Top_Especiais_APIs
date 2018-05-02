@@ -15,8 +15,8 @@ import json
 
 
 # Ex 1
-app_id = 'abd5ce20'
-app_key = '8f5b72669e486e5f0c453e7c724f54f2'
+app_id = ''
+app_key = ''
 
 language = 'en'
 word_id = 'Changed'
