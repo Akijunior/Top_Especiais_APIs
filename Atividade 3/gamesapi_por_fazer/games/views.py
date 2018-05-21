@@ -4,61 +4,89 @@ Chapter 2: Working with class based views and hyperlinked APIs in Django
 Author: Gaston C. Hillar - Twitter.com/gastonhillar
 Publisher: Packt Publishing Ltd. - http://www.packtpub.com
 """
-from rest_framework import status, generics
-from rest_framework.decorators import api_view
+from rest_framework import generics, viewsets
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, \
+    UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from .models import Game, GameCategory, Player, Score
 from .serializers import GameSerializer, GameCategorySerializer, PlayerSerializer, ScoreSerializer
 
-# class GameCategoryList(generics.GenericAPIView):
-class GameCategoryList(generics.ListCreateAPIView):
+
+# class ModelViewSet
+# class GameCategoryList(generics.ListCreateAPIView):
+class GameCategoryOperations(ListModelMixin, CreateModelMixin, RetrieveModelMixin,
+                             UpdateModelMixin, DestroyModelMixin, GenericAPIView):
     queryset = GameCategory.objects.all()
     serializer_class = GameCategorySerializer
-    name = 'gamecategory-list'
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
-class GameCategoryDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = GameCategory.objects.all()
-    serializer_class = GameCategorySerializer
-    name = 'gamecategory-detail'
-
-
-class GameList(generics.ListCreateAPIView):
+class GameOperations(ListModelMixin, CreateModelMixin, RetrieveModelMixin,
+                             UpdateModelMixin, DestroyModelMixin, GenericAPIView):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
-    name = 'game-list'
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
-class GameDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Game.objects.all()
-    serializer_class = GameSerializer
-    name = 'game-detail'
-
-
-class PlayerList(generics.ListCreateAPIView):
+class PlayerOperations(ListModelMixin, CreateModelMixin, RetrieveModelMixin,
+                             UpdateModelMixin, DestroyModelMixin, GenericAPIView):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
-    name = 'player-list'
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
-class PlayerDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Player.objects.all()
-    serializer_class = PlayerSerializer
-    name = 'player-detail'
-
-
-class ScoreList(generics.ListCreateAPIView):
+class ScoreOperations(ListModelMixin, CreateModelMixin, RetrieveModelMixin,
+                             UpdateModelMixin, DestroyModelMixin, GenericAPIView):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
-    name = 'score-list'
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
-class ScoreDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Score.objects.all()
-    serializer_class = ScoreSerializer
-    name = 'score-detail'
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class ApiRoot(generics.GenericAPIView):
@@ -66,10 +94,10 @@ class ApiRoot(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return Response({
-            'players': reverse(PlayerList.name, request=request),
-            'game-categories': reverse(GameCategoryList.name, request=request),
-            'games': reverse(GameList.name, request=request),
-            'scores': reverse(ScoreList.name, request=request)
+            'players': reverse('player-list', request=request),
+            'game-categories': reverse('game-category-list', request=request),
+            'games': reverse('game-list', request=request),
+            'scores': reverse('score-list', request=request)
         })
 
 # @api_view(['GET', 'POST'])
