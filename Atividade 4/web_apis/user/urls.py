@@ -8,6 +8,7 @@ router.register('users', views.UserView)
 router.register('comments', views.CommentView)
 router.register('posts', views.PostView)
 
+app_name='user'
 urlpatterns = [
     path('', include(router.urls))
 ]
