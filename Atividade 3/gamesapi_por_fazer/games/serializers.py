@@ -42,4 +42,4 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Player
-        fields = ('url', 'name', 'gender', 'scores', )
+        fields = ('url', 'name', 'gender', 'scores',)
