@@ -16,10 +16,10 @@ class PostSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="user:post-detail",
     )
-    comments = CommentSerializer(many=True, read_only=True)
+    comments_in_post = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Post
-        fields = ('url', 'title', 'body', 'userId', 'comments')
+        fields = ('url', 'title', 'body', 'userId', 'comments_in_post')
 
 
 class UserSerializer(serializers.ModelSerializer):

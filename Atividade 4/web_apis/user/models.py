@@ -24,7 +24,8 @@ class Comment(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     body = models.CharField(max_length=300)
-    postId = models.ForeignKey('Post', related_name='comments_in_post',on_delete=models.CASCADE)
+    postId = models.ForeignKey('Post', related_name='comments_in_post', verbose_name='Todos os comentários',
+                               on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
