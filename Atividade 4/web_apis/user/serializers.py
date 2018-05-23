@@ -16,7 +16,9 @@ class PostSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="user:post-detail",
     )
+    # comments_in_post = serializers.HyperlinkedRelatedField(many=True, view_name='user:comment-detail', read_only=True)
     comments_in_post = CommentSerializer(many=True, read_only=True)
+    userId = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='name')
     class Meta:
         model = Post
         fields = ('url', 'title', 'body', 'userId', 'comments_in_post')
