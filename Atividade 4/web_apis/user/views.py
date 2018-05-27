@@ -1,20 +1,62 @@
-from rest_framework import  viewsets
+from httplib2 import Response
+from rest_framework import viewsets, status
+from rest_framework.decorators import action, api_view
 from .serializers import *
 
 
-class UserView(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    # @action(methods=['post', 'get', 'put'], detail=True, url_path='user_gram', url_name='user_gram')
+    #
+    # def user_gram(self, request, pk=None):
+    #     user = self.get_object()
+    #     return Response([post.title for post in user.user_posts.all()])
 
-class PostView(viewsets.ModelViewSet):
+    class Meta:
+        routes = {
+            "posts": 'PostViewSet',
+            "comments": 'CommentViewSet'
+        }
+
+
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    class Meta:
+        routes = {
+            "users": UserViewSet,
+        }
 
-class CommentView(viewsets.ModelViewSet):
+
+class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def user_post_detail(request, user_id, post_id):
+#     try:
+#         user = User.objects.get(id=user_id)
+#         user_posts = user.user_posts.all()
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     if request.method == 'GET':
+#         user_serializer = UserSerializer(user_posts)
+#         return Response(user_serializer.data)
+#
+#     elif request.method == 'PUT':
+#         game_serializer = UserSerializer(user, data=request.data)
+#         game_serializer.save()
+#         return Response(game_serializer.data, status=status.HTTP_201_CREATED)
+#
+#     elif request.method == 'DELETE':
+#         user.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # class UserOperations(ListModelMixin, CreateModelMixin, RetrieveModelMixin,
 #                              UpdateModelMixin, DestroyModelMixin, GenericAPIView):

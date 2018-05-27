@@ -4,13 +4,14 @@ from user import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('users', views.UserView)
-router.register('comments', views.CommentView)
-router.register('posts', views.PostView)
+router.register('users', views.UserViewSet)
+router.register('comments', views.CommentViewSet)
+router.register('posts', views.PostViewSet)
 
 app_name='user'
 urlpatterns = [
-    path('', include(router.urls))
+    # path('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail),
+    path('', include(router.urls)),
 ]
 #
 # urlpatterns = [
