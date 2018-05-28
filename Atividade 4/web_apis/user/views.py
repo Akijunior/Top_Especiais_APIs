@@ -8,15 +8,15 @@ from rest_framework.decorators import action, api_view
 from .serializers import *
 
 
-def index(request):
-
-    dicio_json = {"""conteudo db.json"""}
-    dicio_string = json.dumps(dicio_json)
-    dicio_python = json.loads(dicio_string)
-    dicio_user = dicio_python["users"]
-
-    for i in dicio_user:
-        ...
+# def index(request):
+#
+#     dicio_json = {"""conteudo db.json"""}
+#     dicio_string = json.dumps(dicio_json)
+#     dicio_python = json.loads(dicio_string)
+#     dicio_user = dicio_python["users"]
+#
+#     for i in dicio_user:
+#         ...
 
 
 class UserViewSet(viewsets.ModelViewSet):
