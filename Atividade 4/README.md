@@ -6,14 +6,38 @@
 	• Comment: id, name, email, body, postId
 	• Post: id, title, body, userId
 
-## Importe o JSON repassado para o seu banco de dados ou use o script “dump” do mysql e crie uma API RESTful que atenta aos seguintes requisitos:
-	a) Listar usuários; (Feito)
-	b) Listar um usuário individualmente; (Feito)
-	c) Altere a alternativa b) para listar além do usuário os links para as suas postagens; (Feito)
-	d) Listar todas as postagens; (Feito)
-	e) Altere a alternativa anterior para listar as postagens e o nome de seu usuário; (Feito)
-	f) Listar uma postagem individualmente e o nome do seu usuário e links para seus comentários; (Feito)
-	g) Incluir postagens; (Feito)
-	h) Altere a alternativa f) anterior para listar uma postagem individualmente, seu nome de usuário e seus comentários; (Feito)
-	i) Incluir comentários em uma postagem; (Feito)
-	j) Excluir postagens e, obviamente, seus comentários. (Feito)
+## Questões
+	a) (0,25) Listar os usuários e permitir o GET para listar e detalhar um usuário:
+		http://servidor/profiles
+		http://servidor/profiles/1 , onde 1 é o id do usuário;
+	### (Feito)
+
+	b) (0,25) Criar um end point que liste os usuários, suas postagens e, para cada postagem, um número total de comentários:
+		http://servidor/profile-posts/
+		http://servidor/profile-posts/1/ onde 1 é o id do usuário;
+	### (Feito)
+
+	c) (0,25) Criar um outro end point, para permitir listar/detalhar/incluir/alterar/excluir um usuário específico com suas postagens da seguinte forma:
+		http://servidor/profiles/3/posts, onde o 3 representará o id do usuário;
+		http://servidor/profiles/3/posts/1, onde 1 é o id do post;
+	### (Feito)
+
+	d) (0,25) Criar um outro end point, para permitir listar/detalhar/incluir/alterar/excluir comentários de uma postagem:
+		http://servidor/profiles/3/posts/1/comments , onde o 3 representará o id do usuário e 1 o id da postagem;
+		http://servidor/profiles/3/posts/1/comments/2 , onde 2 é o id do comentário.
+	### (Feito)
+
+	e) (0,25) Permitir que, ao excluir uma postagem, postagens excluir seus comentários;
+	### (Feito)
+
+	f) (0,25) Criar um end point que liste e detalhe o total de posts e comentários nas postagens dos usuários. O formato da resposta deve ser algo como:
+	{
+	pk: 1,
+	name: “joão”,
+	total_posts: 5,
+	total_coments: 30
+	}
+	### (Feito)
+
+	g) (0,5) Alguma implementação diferente da proposta sobre a base, usando algo relevante e ainda não visto na disciplina.
+	### (Feito)

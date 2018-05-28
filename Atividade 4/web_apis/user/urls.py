@@ -7,10 +7,15 @@ router = routers.DefaultRouter()
 router.register('users', views.UserViewSet)
 router.register('comments', views.CommentViewSet)
 router.register('posts', views.PostViewSet)
+# router.register('user-posts', views.PostHyperViewSet)
+# router.register('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail)
 
 app_name='user'
 urlpatterns = [
-    # path('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail),
+    # path('users/<int:user_id>/posts/', views.UserPostListViewSet.as_view({'get': 'list'})),
+    path('users/<int:user_id>/posts/', views.UserDetail.as_view(), name='user-posts'),
+    path('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail),
+    # path('users/<int:pk>/highlight/', views.PostHighlight.as_view()),
     path('', include(router.urls)),
 ]
 #
