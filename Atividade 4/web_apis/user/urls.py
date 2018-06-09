@@ -7,15 +7,19 @@ router = routers.DefaultRouter()
 router.register('users', views.UserViewSet)
 router.register('comments', views.CommentViewSet)
 router.register('posts', views.PostViewSet)
+router.register('related-user', views.UserRelatedViewSet)
 # router.register('user-posts', views.PostHyperViewSet)
 # router.register('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail)
 
 app_name='user'
 urlpatterns = [
-    # path('users/<int:user_id>/posts/', views.UserPostListViewSet.as_view({'get': 'list'})),
     path('users/<int:user_id>/posts/', views.UserDetail.as_view(), name='user-posts'),
-    path('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail),
+    path('users/<int:pk>/posts/<int:post_id>', views.UserPostDetail.as_view(), name='user-post-detail'),
+    path('users/<int:pk>/posts/<int:post_id>/comments/', views.UserPostComments.as_view(), name='user-post-comment'),
+    path('users/<int:pk>/posts/<int:post_id>/comments/<int:comment_id>', views.UserPostCommentDetail.as_view(), name='user-post-comment-detail'),
+    # path('users/<int:user_id>/posts/<int:post_id>', views.user_post_detail, name='user-post-detail'),
     # path('users/<int:pk>/highlight/', views.PostHighlight.as_view()),
+    # path('users/<int:user_id>/posts/', views.UserPostListViewSet.as_view({'get': 'list'})),
     path('', include(router.urls)),
 ]
 #

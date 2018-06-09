@@ -57,11 +57,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
 
-# class PostHyperViewSet(viewsets.ModelViewSet):
-#     queryset = Post.objects.all()
-#     serializer_class = PostHyperlink
-
-
 class UserDetail(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 
@@ -76,18 +71,57 @@ class UserDetail(generics.ListCreateAPIView):
         return posts
 
 
-# class ClubList(generics.ListCreateAPIView):
-#     queryset = Club.objects.all()
-#     serializer_class = ClubSerializer
-#
-#
-# class PersonDetail(generics.RetrieveUpdateDestroyAPIView):
-#     serializer_class = PersonSerializer
-#
-#
-# def get_object(self):
-#     person_id = self.kwargs.get('pk',None)
-#     return Person.objects.get(pk=person_id)
+class UserRelatedViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserPostRelatedSerializer
+
+
+
+class UserPostDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        try:
+            user = User.objects.get(pk=self.kwargs.get('pk', None))
+
+        except User.DoesNotExist:
+            user = None
+
+        posts = Post.objects.filter(userId=user.id)
+        post = posts.filter(pk=self.kwargs.get('post_id', None))
+        return post
+
+
+class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        try:
+            user = User.objects.get(pk=self.kwargs.get('pk', None))
+
+        except User.DoesNotExist:
+            user = None
+
+        posts = Post.objects.filter(userId=user.id)
+        post = posts.get(pk=self.kwargs.get('post_id', None))
+        comment = post.comments_in_post.filter(pk=self.kwargs.get('comment_id', None))
+        return comment
+
+
+class UserPostComments(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        try:
+            user = User.objects.get(pk=self.kwargs.get('pk', None))
+        except User.DoesNotExist:
+            user = None
+
+        posts = Post.objects.filter(userId=user.id)
+        post = posts.get(pk=self.kwargs.get('post_id', None))
+        comments = post.comments_in_post
+        return comments
+    
 
 @api_view(['GET', 'POST'])
 def user_post_list(request, user_id):
@@ -125,16 +159,16 @@ def user_post_detail(request, user_id, post_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# from rest_framework import renderers
-# from rest_framework.response import Response
+from rest_framework import renderers
+from rest_framework.response import Response
 #
-# class PostHighlight(generics.GenericAPIView):
-#     queryset = Post.objects.all()
-#     renderer_classes = (renderers.StaticHTMLRenderer,)
-#
-#     def get(self, request, *args, **kwargs):
-#         post = self.get_object()
-#         return Response(post.title)
+class PostHighlight(generics.GenericAPIView):
+    queryset = Post.objects.all()
+    renderer_classes = (renderers.StaticHTMLRenderer,)
+
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+        return Response(post.title)
 
 
 # class UserPostListViewSet(viewsets.ModelViewSet):

@@ -45,20 +45,20 @@ class UserPostsSerializer(serializers.ModelSerializer):
 
 
 
-# class PostListingField(serializers.RelatedField):
-#     queryset = PostSerializer.c
-#     def to_representation(self, value):
-#         return "Título: %s | Quantidade de comentários: %s" % (value.title, value.comments_count)
+class PostListingField(serializers.RelatedField):
+    # queryset = PostSerializer
+    def to_representation(self, value):
+        return "Título: %s | Corpo: %s" % (value.title, value.body)
+
+    def get_queryset(self):
+        return Post.objects.all()
 
 
-# class UserPostSerializer(serializers.ModelSerializer):
-#     url = serializers.HyperlinkedIdentityField(
-#         view_name="user:user-detail",
-#     )
-#
-#     class Meta:
-#         model = Post
-#         fields = '__all__'
+class UserPostRelatedSerializer(serializers.ModelSerializer):
+    user_posts = PostListingField(many=True)
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
 # class PostHyperlink(serializers.HyperlinkedRelatedField):
@@ -112,14 +112,7 @@ class UserSerializer(serializers.ModelSerializer):
             Post.objects.create(post=post, **post_data)
         return post
 
-# class UserPostListSerializer(serializers.ModelSerializer):
-#     url = serializers.HyperlinkedIdentityField(
-#         view_name="user:user-detail",
-#     )
-#
-#     class Meta:
-#         model = Post
-#         fields = ('url',)
+
 
 
 
