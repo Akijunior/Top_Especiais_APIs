@@ -4,19 +4,19 @@ from rest_framework.reverse import reverse
 from .models import *
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="user:comment-detail",
-    )
+class CommentSerializer(serializers.HyperlinkedModelSerializer):
+    # url = serializers.HyperlinkedIdentityField(
+    #     view_name="user:comment-detail",
+    # )
     class Meta:
         model = Comment
         fields = ('url', 'name', 'email', 'body', 'postId')
 
 
-class PostSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="user:post-detail",
-    )
+class PostSerializer(serializers.HyperlinkedModelSerializer):
+    # url = serializers.HyperlinkedIdentityField(
+    #     view_name="user:post-detail",
+    # )
     comments_in_post = serializers.HyperlinkedRelatedField(many=True, view_name='user:comment-detail', read_only=True)
     # comments_in_post = CommentSerializer(many=True, read_only=True)
     userId = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='name')
@@ -61,32 +61,13 @@ class UserPostRelatedSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class PostHyperlink(serializers.HyperlinkedRelatedField):
-#     view_name = 'user:user-post-detail'
-#     queryset = Post.objects.all()
-#
-#     def get_url(self, obj, view_name, request, format):
-#         url_kwargs = {
-#             'user_id': obj.userId,
-#             'post_id': obj.pk,
-#         }
-#         return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
-#
-#     def get_object(self, view_name, view_args, view_kwargs):
-#         lookup_kwargs = {
-#             'user__id': view_kwargs['user_id'],
-#             'id': view_kwargs['post_id']
-#         }
-#         return self.get_queryset().get(**lookup_kwargs)
-
-
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     # user_posts = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='userId')
     # user_posts = serializers.StringRelatedField(many=True, read_only=True)
     # user_posts = PostSerializer(many=True, read_only=True)
-    url = serializers.HyperlinkedIdentityField(
-        view_name="user:user-detail",
-    )
+    # url = serializers.HyperlinkedIdentityField(
+    #     view_name="user:user-detail",
+    # )
     # user_posts = serializers.HyperlinkedRelatedField(many=True, view_name='user:post-detail', read_only=True)
     # user_posts = PostSerializer(many=True)
     # user_posts = PostHyperlink(many=True)

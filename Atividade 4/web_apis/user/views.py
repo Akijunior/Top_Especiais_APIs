@@ -1,74 +1,72 @@
-import json
-
-from django.forms import model_to_dict
-from rest_framework.response import Response
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets, status, generics, permissions
 from rest_framework.decorators import action, api_view
+from rest_framework import renderers
+from rest_framework.response import Response
 
 from .serializers import *
 
-
-# def index(request):
-#
-#     dicio_json = {"""conteudo db.json"""}
-#     dicio_string = json.dumps(dicio_json)
-#     dicio_python = json.loads(dicio_string)
-#     dicio_user = dicio_python["users"]
-#
-#     for i in dicio_user:
-#         ...
-
-
-class UserViewSet(viewsets.ModelViewSet):
+class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-    @action(methods=['post', 'get', 'put'], detail=True, url_path='posts', url_name='user_post_list')
-
-    def user_post_list(self, request, pk=None):
-        user = self.get_object()
-        lista = user.user_posts.all()
-        # lista = PostSerializer.data.fget(user)
-        user_posts = []
-        for post in lista:
-            obj = model_to_dict(post)
-            user_posts.append(obj)
-        return Response(user_posts)
-
-    class Meta:
-        routes = {
-            "posts": 'PostViewSet',
-            "comments": 'CommentViewSet'
-        }
-
-
-class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-    class Meta:
-        routes = {
-            "users": UserViewSet,
-        }
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    name = 'user-list'
+    permission_classes = (permissions.IsAuthenticated, )
 
 
 class UserDetail(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-detail'
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, )
+
+
+class PostList(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
+    name = 'post-list'
+    permission_classes = (permissions.IsAuthenticated, )
 
-    def get_queryset(self):
-        try:
-            user = User.objects.get(pk=self.kwargs.get('user_id', None))
 
-        except User.DoesNotExist:
-            user = None
+class PostDetail(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    name = 'post-detail'
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, )
 
-        posts = Post.objects.filter(userId=user.id)
-        return posts
+
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    name = 'comment-list'
+    permission_classes = (permissions.IsAuthenticated, )
+
+
+class CommentDetail(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    name = 'comment-detail'
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, )
+
+
+
+# class UserList(generics.ListCreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     name = 'user-list'
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+#
+#
+# class UserDetail(generics.ListCreateAPIView):
+#     serializer_class = PostSerializer
+#
+#     def get_queryset(self):
+#         try:
+#             user = User.objects.get(pk=self.kwargs.get('user_id', None))
+#
+#         except User.DoesNotExist:
+#             user = None
+#
+#         posts = Post.objects.filter(userId=user.id)
+#         return posts
 
 
 class UserRelatedViewSet(viewsets.ModelViewSet):
@@ -159,9 +157,6 @@ def user_post_detail(request, user_id, post_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-from rest_framework import renderers
-from rest_framework.response import Response
-#
 class PostHighlight(generics.GenericAPIView):
     queryset = Post.objects.all()
     renderer_classes = (renderers.StaticHTMLRenderer,)
@@ -169,6 +164,68 @@ class PostHighlight(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         post = self.get_object()
         return Response(post.title)
+
+
+class ApiRoot(generics.GenericAPIView):
+    name = 'api-root'
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            'users': reverse(UserList.name, request=request),
+            'posts': reverse(PostList.name, request=request),
+            'comments': reverse(CommentList.name, request=request),
+        })
+
+
+
+# def index(request):
+#
+#     dicio_json = {"""conteudo db.json"""}
+#     dicio_string = json.dumps(dicio_json)
+#     dicio_python = json.loads(dicio_string)
+#     dicio_user = dicio_python["users"]
+#
+#     for i in dicio_user:
+#         ...
+#
+#
+# class UserViewSet(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+#
+#     # @action(methods=['post', 'get', 'put'], detail=True, url_path='posts', url_name='user_post_list')
+#     #
+#     # def user_post_list(self, request, pk=None):
+#     #     user = self.get_object()
+#     #     lista = user.user_posts.all()
+#     #     # lista = PostSerializer.data.fget(user)
+#     #     user_posts = []
+#     #     for post in lista:
+#     #         obj = model_to_dict(post)
+#     #         user_posts.append(obj)
+#     #     return Response(user_posts)
+#
+#     class Meta:
+#         routes = {
+#             "posts": 'PostViewSet',
+#             "comments": 'CommentViewSet'
+#         }
+#
+#
+# class PostViewSet(viewsets.ModelViewSet):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+#
+#     class Meta:
+#         routes = {
+#             "users": UserViewSet,
+#         }
+#
+#
+# class CommentViewSet(viewsets.ModelViewSet):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
 
 
 # class UserPostListViewSet(viewsets.ModelViewSet):

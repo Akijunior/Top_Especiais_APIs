@@ -5,6 +5,7 @@ class User(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     addressId = models.ForeignKey('Address', related_name='users_in_address',on_delete=models.CASCADE)
+    profiles = models.ManyToManyField('auth.User')
 
     def __str__(self):
         return self.name
@@ -34,6 +35,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     body = models.CharField(max_length=300)
     userId = models.ForeignKey('User', related_name='user_posts',on_delete=models.CASCADE)
+    owner = models.ForeignKey('auth.User', related_name='posts', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
