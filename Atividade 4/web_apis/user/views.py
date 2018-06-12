@@ -1,22 +1,23 @@
-from rest_framework import viewsets, status, generics, permissions
-from rest_framework.decorators import action, api_view
 from rest_framework import renderers
+from rest_framework import viewsets, generics, permissions
 from rest_framework.response import Response
 
+from user.permissions import IsOwnerOrReadOnly, IsOneProfileOfTheUserOrAccessDenied
 from .serializers import *
+
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-list'
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
 
 
-class UserDetail(generics.ListCreateAPIView):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-detail'
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, )
+    permission_classes = (permissions.IsAuthenticated, IsOneProfileOfTheUserOrAccessDenied, )
 
 
 class PostList(generics.ListCreateAPIView):
@@ -26,11 +27,11 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated, )
 
 
-class PostDetail(generics.ListCreateAPIView):
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     name = 'post-detail'
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, )
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly, )
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -40,39 +41,16 @@ class CommentList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated, )
 
 
-class CommentDetail(generics.ListCreateAPIView):
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     name = 'comment-detail'
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, )
-
-
-
-# class UserList(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-#     name = 'user-list'
-#     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
-#
-#
-# class UserDetail(generics.ListCreateAPIView):
-#     serializer_class = PostSerializer
-#
-#     def get_queryset(self):
-#         try:
-#             user = User.objects.get(pk=self.kwargs.get('user_id', None))
-#
-#         except User.DoesNotExist:
-#             user = None
-#
-#         posts = Post.objects.filter(userId=user.id)
-#         return posts
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly, )
 
 
 class UserRelatedViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserPostRelatedSerializer
-
 
 
 class UserPostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -88,6 +66,8 @@ class UserPostDetail(generics.RetrieveUpdateDestroyAPIView):
         posts = Post.objects.filter(userId=user.id)
         post = posts.filter(pk=self.kwargs.get('post_id', None))
         return post
+
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOrReadOnly,)
 
 
 class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -105,6 +85,8 @@ class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
         comment = post.comments_in_post.filter(pk=self.kwargs.get('comment_id', None))
         return comment
 
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOrReadOnly,)
+
 
 class UserPostComments(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
@@ -119,42 +101,8 @@ class UserPostComments(generics.ListCreateAPIView):
         post = posts.get(pk=self.kwargs.get('post_id', None))
         comments = post.comments_in_post
         return comments
-    
 
-@api_view(['GET', 'POST'])
-def user_post_list(request, user_id):
-    if request.method == 'GET':
-        user = User.objects.get(id=user_id)
-        user_posts = user.user_posts.all()
-        user_posts_serializer = UserPostsSerializer(user_posts, many=True)
-        return Response(user_posts_serializer.data)
-
-    elif request.method == 'POST':
-        user_posts_serializer = UserPostsSerializer(data=request.data)
-        user_posts_serializer.save()
-        return Response(user_posts_serializer.data, status=status.HTTP_201_CREATED)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_post_detail(request, user_id, post_id):
-    try:
-        user = User.objects.get(id=user_id)
-        user_posts = user.user_posts.all().get(id=post_id)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        user_post_serializer = UserPostsSerializer(user_posts, context={'request':request})
-        return Response(user_post_serializer.data)
-
-    elif request.method == 'PUT':
-        user_serializer = UserPostsSerializer(user, data=request.data)
-        user_serializer.save()
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
-
-    elif request.method == 'DELETE':
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOrReadOnly,)
 
 
 class PostHighlight(generics.GenericAPIView):
@@ -176,6 +124,61 @@ class ApiRoot(generics.GenericAPIView):
             'comments': reverse(CommentList.name, request=request),
         })
 
+# @api_view(['GET', 'POST'])
+# def user_post_list(request, user_id):
+#     if request.method == 'GET':
+#         user = User.objects.get(id=user_id)
+#         user_posts = user.user_posts.all()
+#         user_posts_serializer = UserPostsSerializer(user_posts, many=True)
+#         return Response(user_posts_serializer.data)
+#
+#     elif request.method == 'POST':
+#         user_posts_serializer = UserPostsSerializer(data=request.data)
+#         user_posts_serializer.save()
+#         return Response(user_posts_serializer.data, status=status.HTTP_201_CREATED)
+#
+#
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def user_post_detail(request, user_id, post_id):
+#     try:
+#         user = User.objects.get(id=user_id)
+#         user_posts = user.user_posts.all().get(id=post_id)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     if request.method == 'GET':
+#         user_post_serializer = UserPostsSerializer(user_posts, context={'request': request})
+#         return Response(user_post_serializer.data)
+#
+#     elif request.method == 'PUT':
+#         user_serializer = UserPostsSerializer(user, data=request.data)
+#         user_serializer.save()
+#         return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+#
+#     elif request.method == 'DELETE':
+#         user.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class UserList(generics.ListCreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     name = 'user-list'
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+#
+#
+# class UserDetail(generics.ListCreateAPIView):
+#     serializer_class = PostSerializer
+#
+#     def get_queryset(self):
+#         try:
+#             user = User.objects.get(pk=self.kwargs.get('user_id', None))
+#
+#         except User.DoesNotExist:
+#             user = None
+#
+#         posts = Post.objects.filter(userId=user.id)
+#         return posts
 
 
 # def index(request):
