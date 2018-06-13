@@ -1,8 +1,10 @@
 from rest_framework import renderers
 from rest_framework import viewsets, generics, permissions
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-from user.permissions import IsOwnerOrReadOnly, IsOneProfileOfTheUserOrAccessDenied
+from rest_framework.authtoken.models import Token
+from user.permissions import *
 from .serializers import *
 
 
@@ -31,7 +33,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     name = 'post-detail'
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly, )
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOfPostOrReadOnly, )
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -45,7 +47,7 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     name = 'comment-detail'
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly, )
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOfCommentOrManagerOfPost, )
 
 
 class UserRelatedViewSet(viewsets.ModelViewSet):
@@ -67,7 +69,7 @@ class UserPostDetail(generics.RetrieveUpdateDestroyAPIView):
         post = posts.filter(pk=self.kwargs.get('post_id', None))
         return post
 
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOfPostOrReadOnly,)
 
 
 class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -85,7 +87,7 @@ class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
         comment = post.comments_in_post.filter(pk=self.kwargs.get('comment_id', None))
         return comment
 
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOfPostOrReadOnly,)
 
 
 class UserPostComments(generics.ListCreateAPIView):
@@ -99,10 +101,10 @@ class UserPostComments(generics.ListCreateAPIView):
 
         posts = Post.objects.filter(userId=user.id)
         post = posts.get(pk=self.kwargs.get('post_id', None))
-        comments = post.comments_in_post
+        comments = post.comments_in_post.all()
         return comments
 
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOfCommentOrManagerOfPost, )
 
 
 class PostHighlight(generics.GenericAPIView):
@@ -112,6 +114,21 @@ class PostHighlight(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         post = self.get_object()
         return Response(post.title)
+
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request':request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'user_id': user.id,
+            'user_name': user.username,
+            'token': token.key,
+        })
+
 
 
 class ApiRoot(generics.GenericAPIView):

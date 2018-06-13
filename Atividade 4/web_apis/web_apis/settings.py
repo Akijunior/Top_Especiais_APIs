@@ -54,7 +54,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '20/hour',
         'user': '50/hour',
-        'game-categories': '30/hour',
+        # 'game-categories': '30/hour',
+        'api-token-auth2': '1/hour',
     },
 }
 

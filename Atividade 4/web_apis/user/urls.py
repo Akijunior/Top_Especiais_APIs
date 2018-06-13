@@ -1,4 +1,5 @@
 from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
 
 from user import views
 
@@ -19,6 +20,9 @@ urlpatterns = [
     path('users/<int:pk>/posts/<int:post_id>', views.UserPostDetail.as_view(), name='user-post-detail'),
     path('users/<int:pk>/posts/<int:post_id>/comments/', views.UserPostComments.as_view(), name='user-post-comment'),
     path('users/<int:pk>/posts/<int:post_id>/comments/<int:comment_id>', views.UserPostCommentDetail.as_view(), name='user-post-comment-detail'),
+
+    path('api-token-auth/', obtain_auth_token),
+    path('api-token-auth2/', views.CustomAuthToken.as_view()),
 
 ]
 

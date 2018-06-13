@@ -1,12 +1,25 @@
 from rest_framework import permissions
 
+from user.models import Post, User
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+
+class IsOwnerOfCommentOrManagerOfPost(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            id = obj.postId
+            post = Post.objects.get(id=id.id)
+            user = User.objects.get(id=post.userId.id)
+            return request.user in user.profiles.all()
+
+class IsOwnerOfPostOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
             return obj.owner == request.user
+
 
 class IsOneProfileOfTheUserOrAccessDenied(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
