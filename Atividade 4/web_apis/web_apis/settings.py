@@ -55,7 +55,7 @@ REST_FRAMEWORK = {
         'anon': '20/hour',
         'user': '50/hour',
         # 'game-categories': '30/hour',
-        'api-token-auth2': '1/hour',
+        'api-token': '1/hour',
     },
 }
 

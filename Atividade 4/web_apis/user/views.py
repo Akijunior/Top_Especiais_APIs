@@ -4,6 +4,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
 from rest_framework.authtoken.models import Token
+from rest_framework.throttling import ScopedRateThrottle
+
 from user.permissions import *
 from .serializers import *
 
@@ -12,14 +14,14 @@ class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-list'
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-detail'
-    permission_classes = (permissions.IsAuthenticated, IsOneProfileOfTheUserOrAccessDenied, )
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
 
 
 class PostList(generics.ListCreateAPIView):
@@ -117,6 +119,9 @@ class PostHighlight(generics.GenericAPIView):
 
 
 class CustomAuthToken(ObtainAuthToken):
+
+    throttle_scope = 'api-token'
+    throttle_classes = (ScopedRateThrottle, )
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request':request})

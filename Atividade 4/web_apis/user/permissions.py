@@ -3,6 +3,13 @@ from rest_framework import permissions
 from user.models import Post, User
 
 
+class ReadUserOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            return False
+
 class IsOwnerOfCommentOrManagerOfPost(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:

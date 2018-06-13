@@ -6,6 +6,7 @@ class User(models.Model):
     email = models.EmailField(max_length=100)
     addressId = models.ForeignKey('Address', related_name='users_in_address',on_delete=models.CASCADE)
     profiles = models.ManyToManyField('auth.User')
+    profile = models.ForeignKey('auth.User', related_name='users', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
