@@ -10,14 +10,14 @@ from user.permissions import *
 from .serializers import *
 
 
-class UserList(generics.ListCreateAPIView):
+class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-list'
     permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
 
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-detail'
@@ -29,6 +29,9 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     name = 'post-list'
     permission_classes = (permissions.IsAuthenticated, )
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -55,6 +58,7 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserRelatedViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserPostRelatedSerializer
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
 
 
 class UserPostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -71,7 +75,7 @@ class UserPostDetail(generics.RetrieveUpdateDestroyAPIView):
         post = posts.filter(pk=self.kwargs.get('post_id', None))
         return post
 
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser, IsOwnerOfPostOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOfPostOrReadOnly, )
 
 
 class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -89,7 +93,7 @@ class UserPostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
         comment = post.comments_in_post.filter(pk=self.kwargs.get('comment_id', None))
         return comment
 
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOfPostOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOfCommentOrManagerOfPost, )
 
 
 class UserPostComments(generics.ListCreateAPIView):
