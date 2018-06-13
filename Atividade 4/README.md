@@ -1,4 +1,4 @@
-# Avaliação: Games API
+# Avaliação: PostsAPI
 (4ª atividade)
 
 ## Considere as 3 seguintes entidades onde um usuário possui vários posts. Cada post possui vários comentários.
@@ -41,3 +41,37 @@
 
 	• g) (0,5) Alguma implementação diferente da proposta sobre a base, usando algo relevante e ainda não visto na disciplina.
 	  (Feito)
+
+
+# Avaliação: Autenticações e Permissões na PostsAPI
+(5ª atividade)
+
+
+#Com base nas entidades importadas do exercício anterior (Post, Comment e User) e a WEB API desenvolvida, implemente o que se pede abaixo:
+
+## 1. (1,0) Integre a classe User da aplicação à user do Django:
+	• a. Faça o relacionamento com a classe django.contrib.auth.model.User;
+	• b. Verifique questões de nomes e amenize este conflito, pois um User ter um User fica um tanto ambíguo;
+	• c. Crie usuários no Django para os usuários já importados e faça as associações necessárias;
+	• d. Refatore sua aplicação para permitir apenas “safe methods” para a sub-API de usuários, ou seja, para usuários fica tudo somente leitura e apenas para quem estiver logado;
+	• (Feito - Falta D)
+
+
+## 2. (1,0) Adicione um owner para as postagens e:
+	• a. Apenas usuários logados podem postar algo;
+	• b. Apenas os donos de uma postagem podem excluir e editar seus posts e excluir comentários de suas postagens;
+	• c. A exclusão de um post deve ser em cascata: ao excluir um post, seus comentários serão excluídos;
+	• (Feito)
+
+## 3. (0,5) Implemente o mecanismo de autenticação via token:
+	• a. Crie uma implementação personalizada que, ao solicitar um token, retorne o id do usuário, seu nome e o token;
+	• b. Crie um endpoint para para solicitar token via post;
+	• c. Adicione uma regra via throttling para que seja possível obter um token apenas de hora em hora;
+	• (Feito)
+
+## 4. (0,5) Demais regras:
+	• a. Crie uma API root para essa API semelhante ao criado em sala;
+	• 
+b. Limite aos demais endpoints da API para acesso não autenticado a 20 por hora e usuários autenticados a 50 por hora;
+	• c. Use paginação para as postagens e para os comentários. Use um tamanho de página com tamanho 10;
+	• d. Gere um script de requisições em qualquer biblioteca de python que faça testes na API. No teste devem ser exibidos os status codes e detalhamento das respostas.
