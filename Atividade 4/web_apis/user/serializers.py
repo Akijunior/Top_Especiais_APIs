@@ -19,7 +19,7 @@ class UserPostRelatedSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     posts_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
@@ -43,20 +43,19 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return post
 
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('url', 'name', 'email', 'body', 'postId')
 
     # url = serializers.HyperlinkedIdentityField(
-    #     view_name="user:comment-detail",
-    # )
+    #     view_name="user:comment-detail",)
 
-
-class PostSerializer(serializers.HyperlinkedModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     userId = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='name')
     comments_count = serializers.SerializerMethodField()
-    # comments_in_post = serializers.HyperlinkedRelatedField(many=True, view_name='user:comments-detail', read_only=True)
+    # comments_in_post = serializers.HyperlinkedRelatedField(many=True,
+    #  view_name='user:comments-detail', read_only=True)
 
     def get_comments_count(self, obj):
         return obj.comments_in_post.count()
@@ -64,7 +63,8 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = ('owner', 'userId', 'url', 'title', 'body', 'comments_count')
-    # comments_in_post = serializers.HyperlinkedRelatedField(many=True, view_name='user:comment-detail', read_only=True)
+    # comments_in_post = serializers.HyperlinkedRelatedField(
+    # many=True, view_name='user:comment-detail', read_only=True)
     # comments_in_post = CommentSerializer(many=True, read_only=True)
 
 

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
-from user import views
+from . import views
 
 app_name='user'
 urlpatterns = [

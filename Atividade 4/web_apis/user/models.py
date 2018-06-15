@@ -4,12 +4,16 @@ from django.db import models
 class User(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
-    addressId = models.ForeignKey('Address', related_name='users_in_address',on_delete=models.CASCADE)
+    addressId = models.ForeignKey('Address', related_name='users_in_address',
+                                  on_delete=models.CASCADE, null=True, blank=True)
     profiles = models.ManyToManyField('auth.User')
-    profile = models.ForeignKey('auth.User', related_name='users', on_delete=models.CASCADE)
+    # profile = models.ForeignKey('auth.User', related_name='users', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('name',)
 
 
 class Address(models.Model):
@@ -26,17 +30,22 @@ class Comment(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     body = models.CharField(max_length=300)
-    postId = models.ForeignKey('Post', related_name='comments_in_post', verbose_name='Todos os comentários',
-                               on_delete=models.CASCADE)
+    postId = models.ForeignKey('Post', related_name='comments_in_post', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('name',)
+
 class Post(models.Model):
     title = models.CharField(max_length=100)
     body = models.CharField(max_length=300)
-    userId = models.ForeignKey('User', related_name='user_posts',on_delete=models.CASCADE)
+    userId = models.ForeignKey('User', related_name='user_posts',on_delete=models.CASCADE, null=True, blank=True)
     owner = models.ForeignKey('auth.User', related_name='posts', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ('title',)
