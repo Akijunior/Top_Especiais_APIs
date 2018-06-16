@@ -10,14 +10,6 @@ usuario.save()
 
 from django.contrib.auth.models import User
 
-
-import json
-
-class Object:
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
-
 # Create your tests here.
 
 class UserTestCase(APITestCase):
@@ -41,22 +33,26 @@ class CommentTestCase(APITestCase):
         self.user.profiles.add(self.profile)
         self.client = APIClient()
         self.client.force_authenticate(user=self.profile)
+        self.user.name = str(self.user.id)
+        self.user.save()
         self.post = Post.objects.create(title="Post", body="New Post", owner=self.profile, userId=self.user)
+        self.comment = Comment.objects.create(name='New Comment', email='a@gmail.com',
+                body='Test hello world!', postId=self.post)
 
     def test_user_can_create_a_comment(self):
         url = reverse('comment-list')
         data = {'name': 'New Comment', 'email': 'a@gmail.com',
                 'body': 'Test hello world!', 'postId': self.post.id}
         response = self.client.post(url, data, format='json')
-        # print("Response: ", response.json()) # status_text
+        # print("Response comment: ", response.json()) # status_text
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_user_can_update_a_comment(self):
-        comment = Comment.objects.create(name='New Comment', email='a@gmail.com',
-                body='Test hello world!', postId=self.post)
+        comment = Comment.objects.get()
+        put_data = {'name': 'Updated Comment', 'email': 'a@gmail.com',
+                'body': 'Test hello world!', 'postId': self.post.id}
         url = reverse('comment-detail', kwargs={'pk': comment.id})
-        data = {'name': 'New Comment'}
-        response = self.client.put(url, data, format="json")
+        response = self.client.put(url, put_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -73,12 +69,47 @@ class PostTestCase(APITestCase):
 
     def test_user_can_create_a_post(self):
         url = reverse('post-list')
+        self.user.name = str(self.user.id)
+        self.user.save()
         post_data = {'owner': self.profile.id, 'userId': self.user.id,
                           'title': 'New Post', 'body': 'Test hello world!'}
         response = self.client.post(url, post_data, format='json')
-        print("Response: ", response.json())
-        print("Usuário: ", self.user.id)
+        # print("Response: ", response.json())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_user_can_update_a_own_post(self):
+        self.user.name = str(self.user.id)
+        self.user.save()
+        put_data = {'owner': self.profile.id, 'userId': self.user.id,
+                          'title': 'New Post', 'body': 'Test hello world!'}
+        post = Post.objects.get()
+        url = reverse('post-detail', kwargs={'pk': post.id})
+
+        response = self.client.put(url, put_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_not_can_update_a_post_from_other_user(self):
+        self.other_profile = User.objects.create_user("Ka", 'ka@ka.com', 'ka12345')
+        self.client.force_authenticate(user=self.other_profile)
+
+        self.user.name = str(self.user.id)
+        self.user.save()
+        put_data = {'owner': self.profile.id, 'userId': self.user.id,
+                    'title': 'New Post', 'body': 'Test hello world!'}
+        post = Post.objects.get()
+        url = reverse('post-detail', kwargs={'pk': post.id})
+
+        response = self.client.put(url, put_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+    def test_user_can_delete_a_own_post(self):
+        post = Post.objects.get()
+        response = self.client.delete(
+            reverse('post-detail', kwargs={'pk': post.id}),
+            format="json", follow=True
+        )
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_model_can_create_a_post(self):
         old_count = Post.objects.count()
@@ -124,30 +155,4 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, self.post)
 
-    def test_user_not_can_update_a_post_from_other_user(self):
-        post = Post.objects.get()
-        change_post = {"title": "New Post Title"}
-        response = self.client.put(
-            reverse('post-detail', kwargs={'pk': post.id}),
-            change_post, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_user_can_update_a_own_post(self):
-        post = Post.objects.get()
-        change_post = {'title': 'New Post Title', 'owner': self.profile.id,
-                       'userId': self.user.id, 'body': 'This field is required.'}
-        response = self.client.put(
-            reverse('post-detail', kwargs={'pk': post.id}),
-            change_post, format="json"
-        )
-        print("Response: ", response.json())
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_user_can_delete_a_own_post(self):
-        post = Post.objects.get()
-        response = self.client.delete(
-            reverse('post-detail', kwargs={'pk': post.id}),
-            format="json", follow=True
-        )
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
