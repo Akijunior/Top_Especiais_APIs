@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    postId = serializers.ReadOnlyField(source='post.title')
+    # postId = serializers.ReadOnlyField(source='post.title')
     class Meta:
         model = Comment
         fields = ('url', 'name', 'email', 'body', 'postId')
@@ -53,11 +53,11 @@ class CommentSerializer(serializers.ModelSerializer):
     #     view_name="user:comment-detail",)
 
 class PostSerializer(serializers.ModelSerializer):
-    # userId = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='name', read_only=True)
-    # owner = serializers.ReadOnlyField()
     userId = serializers.ReadOnlyField(source='user.name')
     owner = serializers.ReadOnlyField(source='user.username')
     comments_count = serializers.SerializerMethodField()
+    # userId = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='name', read_only=True)
+    # owner = serializers.ReadOnlyField()
     # comments_in_post = serializers.HyperlinkedRelatedField(many=True,
     #  view_name='user:comments-detail', read_only=True)
 

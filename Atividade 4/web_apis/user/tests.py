@@ -35,11 +35,13 @@ class CommentTestCase(APITestCase):
         self.client.force_authenticate(user=self.profile)
         self.user.name = str(self.user.id)
         self.user.save()
-        self.post = Post.objects.create(title="Post", body="New Post", owner=self.profile, userId=self.user)
+        Post.objects.create(title="Post", body="New Post", owner=self.profile, userId=self.user)
+        self.post = Post.objects.get()
         self.comment = Comment.objects.create(name='New Comment', email='a@gmail.com',
                 body='Test hello world!', postId=self.post)
 
     def test_user_can_create_a_comment(self):
+        # print("O Post é: ", self.post.id, self.post.body)
         url = reverse('comment-list')
         data = {'name': 'New Comment', 'email': 'a@gmail.com',
                 'body': 'Test hello world!', 'postId': self.post.id}
@@ -50,7 +52,7 @@ class CommentTestCase(APITestCase):
     def test_user_can_update_a_comment(self):
         comment = Comment.objects.get()
         put_data = {'name': 'Updated Comment', 'email': 'a@gmail.com',
-                'body': 'Test hello world!', 'postId': self.post.id}
+                'body': 'Test hello world!', 'postId': self.post.id} # , 'postId': self.post.id
         url = reverse('comment-detail', kwargs={'pk': comment.id})
         response = self.client.put(url, put_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
