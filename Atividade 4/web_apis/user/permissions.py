@@ -36,3 +36,5 @@ class IsOneProfileOfTheUserOrAccessDenied(permissions.BasePermission):
             return request.user in obj.profiles.all()
 
 
+
+
