@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import renderers
 from rest_framework import viewsets, generics, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -38,3 +39,22 @@ class GenreDetail(generics.RetrieveAPIView):
     name = 'genre-detail'
     permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
 
+
+class ScoreList(generics.ListCreateAPIView):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
+    name = 'score-list'
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def perform_create(self, serializer):
+        # score = Score.objects.all().get(lector=self.request.user, book=self.request)
+        if Score.objects.all().filter(lector=self.request.user, book=self.request.get('book', None)).exists():
+            Score.objects.all().filter(lector=self.request.user, book=self.kwargs.get('book', None)).delete()
+        serializer.save(lector=self.request.user)
+
+
+class ScoreDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
+    name = 'score-detail'
+    permission_classes = (permissions.IsAuthenticated, )

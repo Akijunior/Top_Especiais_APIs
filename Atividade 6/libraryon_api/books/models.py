@@ -28,8 +28,8 @@ class Book(models.Model):
 
 
 class Score(models.Model):
-    book = models.ForeignKey('Book', on_delete=models.CASCADE)
-    lector = models.ForeignKey('users.Lector', on_delete=models.CASCADE)
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='scores')
+    lector = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='scores')
     score = models.DecimalField(decimal_places=2, validators=[
             MaxValueValidator(10.0), MinValueValidator(0.0)], max_digits=4)
     comment = models.CharField(max_length=200, blank=True)

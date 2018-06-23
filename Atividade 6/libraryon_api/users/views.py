@@ -69,6 +69,7 @@ class ApiRoot(generics.GenericAPIView):
             'lectors': reverse(LectorList.name, request=request),
             'books': reverse(BookList.name, request=request),
             'genres': reverse(GenreList.name, request=request),
+            'scores': reverse(ScoreList.name, request=request),
         })
 
 # @api_view(['GET', 'POST'])
