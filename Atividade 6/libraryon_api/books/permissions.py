@@ -8,7 +8,7 @@ class OnlyAuthorCanCreateABook(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
-            return Author.objects.get(auth_profile=request.user).exists()
+            return Author.objects.filter(auth_profile=request.user).exists()
 
 
 class IsAuthorOfBookOrReadOnly(permissions.BasePermission):

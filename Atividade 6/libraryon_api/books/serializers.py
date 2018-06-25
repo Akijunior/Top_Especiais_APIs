@@ -4,7 +4,7 @@ from users.models import Lector
 from .models import *
 
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Book

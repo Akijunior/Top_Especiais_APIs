@@ -4,7 +4,7 @@ from books.permissions import *
 from .serializers import *
 
 
-class BookList(generics.ListAPIView):
+class BookList(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     name = 'book-list'
