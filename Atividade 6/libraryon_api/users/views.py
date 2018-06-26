@@ -1,4 +1,5 @@
-from rest_framework import renderers
+from django.contrib.auth.models import User
+from rest_framework import renderers, status
 from rest_framework import viewsets, generics, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
@@ -6,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.reverse import reverse
 from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.views import APIView
 
 from users.permissions import *
 from .serializers import *
@@ -41,6 +43,28 @@ class LectorDetail(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
 
 
+class LectorCreate(generics.CreateAPIView):
+    queryset = Lector.objects.all()
+    name = "new-lector"
+    serializer_class = LectorSerializer
+    permission_classes = []
+    authentication_classes = []
+
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save()
+
+class AuthorCreate(generics.CreateAPIView):
+    queryset = Lector.objects.all()
+    name = "new-author"
+    serializer_class = AuthorSerializer
+    permission_classes = [permissions.IsAdminUser, ]
+    authentication_classes = []
+
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save()
+
 
 class CustomAuthToken(ObtainAuthToken):
 
@@ -57,7 +81,6 @@ class CustomAuthToken(ObtainAuthToken):
             'user_name': user.username,
             'token': token.key,
         })
-
 
 
 class ApiRoot(generics.GenericAPIView):

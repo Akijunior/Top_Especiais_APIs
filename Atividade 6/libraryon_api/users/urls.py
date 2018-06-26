@@ -1,4 +1,5 @@
 from django.urls import path, include
+
 from . import views
 
 urlpatterns = [
@@ -7,6 +8,9 @@ urlpatterns = [
 
     path('authors/', views.AuthorList.as_view(), name=views.AuthorList.name),
     path('authors/<int:pk>', views.AuthorDetail.as_view(), name=views.AuthorDetail.name),
+    path('authors/create/', views.AuthorCreate.as_view(), name=views.AuthorCreate.name),
+
     path('lectors/', views.LectorList.as_view(), name=views.LectorList.name),
     path('lectors/<int:pk>', views.LectorDetail.as_view(), name=views.LectorDetail.name),
+    path('lectors/create/', views.LectorCreate.as_view(), name=views.LectorCreate.name),
 ]
