@@ -22,5 +22,5 @@ class ScoreSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Score
-        fields = ('book', 'lector', 'score', 'comment', 'evaluation_date', 'last_update_date')
+        fields = ('url', 'book', 'lector', 'score', 'comment', 'evaluation_date', 'last_update_date')
 

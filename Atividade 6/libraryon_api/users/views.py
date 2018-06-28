@@ -15,11 +15,20 @@ from django_filters.rest_framework import *
 from rest_framework import filters, generics, renderers, status, viewsets, generics, permissions
 from rest_framework.throttling import ScopedRateThrottle
 
+from django.contrib import admin
+admin.autodiscover()
+
+from rest_framework import generics, permissions, serializers
+
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
+
+
 class AuthorList(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-list'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
 
     filter_fields = ('name', 'age')
@@ -31,21 +40,21 @@ class AuthorDetail(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-detail'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
 
 
 class LectorList(generics.ListAPIView):
     queryset = Lector.objects.all()
     serializer_class = LectorSerializer
     name = 'lector-list'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
 
 
 class LectorDetail(generics.RetrieveAPIView):
     queryset = Lector.objects.all()
     serializer_class = LectorSerializer
     name = 'lector-detail'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
+    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
 
 
 class LectorCreate(generics.CreateAPIView):

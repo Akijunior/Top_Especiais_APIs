@@ -11,6 +11,7 @@ EMAIL_VALIDATE_REGEX = r"[^@]+@[^@]+\.[^@]+"
 MIN_PASSWORD_LENGHT = 4
 
 
+
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
