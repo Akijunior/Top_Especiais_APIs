@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="15">
+          <list size="22">
             <item index="0" class="java.lang.String" itemvalue="PyJWT" />
             <item index="1" class="java.lang.String" itemvalue="python-dateutil" />
             <item index="2" class="java.lang.String" itemvalue="httplib2" />
@@ -20,6 +20,13 @@
             <item index="12" class="java.lang.String" itemvalue="urllib3" />
             <item index="13" class="java.lang.String" itemvalue="Markdown" />
             <item index="14" class="java.lang.String" itemvalue="idna" />
+            <item index="15" class="java.lang.String" itemvalue="uritemplate" />
+            <item index="16" class="java.lang.String" itemvalue="coreapi" />
+            <item index="17" class="java.lang.String" itemvalue="django-crispy-forms" />
+            <item index="18" class="java.lang.String" itemvalue="itypes" />
+            <item index="19" class="java.lang.String" itemvalue="coreapi-cli" />
+            <item index="20" class="java.lang.String" itemvalue="click" />
+            <item index="21" class="java.lang.String" itemvalue="coreschema" />
           </list>
         </value>
       </option>

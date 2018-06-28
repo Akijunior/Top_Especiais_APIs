@@ -1,25 +1,30 @@
 from django.contrib.auth.models import User
-from rest_framework import renderers, status
-from rest_framework import viewsets, generics, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
 from rest_framework.authtoken.models import Token
 from rest_framework.reverse import reverse
-from rest_framework.throttling import ScopedRateThrottle
-from rest_framework.views import APIView
 
 from users.permissions import *
 from .serializers import *
 
 from books.views import *
+from django_filters import NumberFilter, DateTimeFilter, AllValuesFilter
+from django_filters.rest_framework import *
 
+from rest_framework import filters, generics, renderers, status, viewsets, generics, permissions
+from rest_framework.throttling import ScopedRateThrottle
 
 class AuthorList(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-list'
     permission_classes = (permissions.IsAuthenticated, ReadUserOnly, )
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+
+    filter_fields = ('name', 'age')
+    search_fields = ('^name',)
+    ordering_fields = ('name', 'age')
 
 
 class AuthorDetail(generics.RetrieveAPIView):
@@ -53,6 +58,7 @@ class LectorCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         if serializer.is_valid():
             serializer.save()
+
 
 class AuthorCreate(generics.CreateAPIView):
     queryset = Lector.objects.all()
