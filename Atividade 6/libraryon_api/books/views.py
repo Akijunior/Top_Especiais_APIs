@@ -7,7 +7,11 @@ from books.permissions import *
 from .serializers import *
 
 
+from rest_framework.renderers import DocumentationRenderer
 
+
+class CustomRenderer(DocumentationRenderer):
+    languages = ['ruby', 'go']
 
 class ScoreFilter(filters.BaseFilterBackend):
     min_score = NumberFilter(
@@ -25,25 +29,25 @@ class ScoreFilter(filters.BaseFilterBackend):
 
     class Meta:
         model = Score
-    fields = (
-        'score',
-        'from_score_date',
-        'to_score_date',
-        'min_score',
-        'max_score',
-        'lector_name',
-        'book_title',
-    )
+    fields = ('score', 'from_score_date', 'to_score_date',
+              'min_score', 'max_score', 'lector_name', 'book_title')
 
 
 class BookList(generics.ListCreateAPIView):
+    """
+    get:
+    Return a list of all the existing books.
+
+    post:
+    Create a new book instance.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     name = 'book-list'
-    permission_classes = (permissions.IsAuthenticated, OnlyAuthorCanCreateABook, )
+    permission_classes = (permissions.IsAuthenticated, OnlyAuthorCanCreateABook, ViewBookPermissions,)
     throttle_scope = 'books-list'
     throttle_classes = (ScopedRateThrottle,)
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, )
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, filters.DjangoObjectPermissionsFilter,)
 
     filter_fields = ('title', 'year', 'price')
     search_fields = ('^title', 'year')
@@ -86,7 +90,7 @@ class ScoreList(generics.ListCreateAPIView):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
     name = 'score-list'
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, )
     throttle_scope = 'scores-list'
     throttle_classes = (ScopedRateThrottle, )
 
