@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'crispy_forms',
     'django_filters',
+    'rest_framework_swagger',
 ]
 
 REST_FRAMEWORK = {

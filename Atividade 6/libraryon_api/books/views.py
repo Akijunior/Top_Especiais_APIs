@@ -10,9 +10,6 @@ from .serializers import *
 from rest_framework.renderers import DocumentationRenderer
 
 
-class CustomRenderer(DocumentationRenderer):
-    languages = ['ruby', 'go']
-
 class ScoreFilter(filters.BaseFilterBackend):
     min_score = NumberFilter(
         name='score', lookup_expr='gte')
