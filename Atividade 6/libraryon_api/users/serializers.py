@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from .models import *
 
- # SETTINGS
+# SETTINGS
 VALIDATE_VALID_EMAIL_REGEX = True
 EMAIL_VALIDATE_REGEX = r"[^@]+@[^@]+\.[^@]+"
 MIN_PASSWORD_LENGHT = 4
