@@ -7,7 +7,6 @@ from .permissions import *
 from .models import *
 
 # SETTINGS
-
 VALIDATE_VALID_EMAIL_REGEX = True
 EMAIL_VALIDATE_REGEX = r"[^@]+@[^@]+\.[^@]+"
 MIN_PASSWORD_LENGHT = 4

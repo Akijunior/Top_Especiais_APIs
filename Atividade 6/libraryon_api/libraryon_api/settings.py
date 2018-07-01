@@ -44,13 +44,13 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_swagger',
     'oauth2_provider',
+    'django_nose',
 ]
 
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
 }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
