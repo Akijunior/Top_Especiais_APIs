@@ -40,7 +40,7 @@ class BookList(generics.ListAPIView):
     ordering_fields = ('title', 'year')
 
 
-class BookDetail(generics.RetrieveAPIView):
+class BookDetail(generics.RetrieveUpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     name = 'book-detail'

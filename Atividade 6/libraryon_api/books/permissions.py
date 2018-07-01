@@ -16,7 +16,7 @@ class IsAuthorOfBookOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
-            if Author.objects.get(auth_profile=request.user).exists():
+            if Author.objects.filter(auth_profile=request.user).exists():
                 author = Author.objects.get(auth_profile=request.user)
                 return obj.authors.filter(auth_profile=author.auth_profile).exists()
             return False
