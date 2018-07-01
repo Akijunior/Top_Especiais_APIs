@@ -43,14 +43,3 @@ class ViewBookPermissions(permissions.DjangoObjectPermissions):
         'PATCH': ['%(app_label)s.change_%(model_name)s'],
         'DELETE': ['%(app_label)s.delete_%(model_name)s'],
     }
-
-
-# class IsOwnerOfCommentOrManagerOfPost(permissions.BasePermission):
-#     def has_object_permission(self, request, view, obj):
-#         if request.method in permissions.SAFE_METHODS:
-#             return True
-#         else:
-#             id = obj.postId
-#             post = Post.objects.get(id=id.id)
-#             user = User.objects.get(id=post.userId.id)
-#             return request.user in user.profiles.all()

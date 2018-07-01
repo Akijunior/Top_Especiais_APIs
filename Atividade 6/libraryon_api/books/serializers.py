@@ -36,21 +36,22 @@ class CreateGenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ('id', 'name', 'description')
 
-    def validate_name(self,name):
-        return name
-    def validate_description(self, description):
-        return description
-
-    def create(self, validated_data):
-        genre = Genre.objects.create(validated_data)
-        genre.save()
-        #return genre
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
         fields = '__all__'
+
+    def validate_name(self,name):
+        return name
+    def validate_description(self, description):
+        return description
+
+    def create(self, validated_data):
+        genre = Genre.objects.create(name=validated_data['name'], description=validated_data['description'])
+        genre.save()
+        return genre
 
 class ScoreSerializer(serializers.HyperlinkedModelSerializer):
     lector = serializers.SlugRelatedField(slug_field='username', read_only=True)
