@@ -2,6 +2,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 # Create your models here.
+from users.models import Author
+
+
 class Book(models.Model):
     AGE_RANGE = (
         ('F', 'Free'),
@@ -58,7 +61,17 @@ class Genre(models.Model):
 def post_save_reply(created, instance, **kwargs):
     Score.objects.exclude(pk=instance.pk).filter(lector=instance.lector.pk, book=instance.book.pk).delete()
 
+def book_save_reply(created, instance, **kwargs):
+    authors = instance.authors.all()
+    for i in range(len(authors)):
+        authors[i].books.add(instance)
+        authors[i].save()
+
 models.signals.post_save.connect(
     post_save_reply, sender=Score, dispatch_uid='post_save_reply'
+)
+
+models.signals.post_save.connect(
+    book_save_reply, sender=Book, dispatch_uid='book_save_reply'
 )
 

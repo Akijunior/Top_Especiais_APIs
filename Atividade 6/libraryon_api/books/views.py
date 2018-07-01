@@ -30,11 +30,10 @@ class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     name = 'book-list'
-    permission_classes = [permissions.IsAuthenticated, OnlyAuthorCanCreateABook, ViewBookPermissions]
+    permission_classes = [permissions.IsAuthenticated, ]
     throttle_scope = 'books-list'
     throttle_classes = [ScopedRateThrottle, ]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,
-                       filters.DjangoObjectPermissionsFilter, ]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, ]
 
     filter_fields = ('title', 'year', 'price')
     search_fields = ('^title', 'year')
@@ -51,7 +50,7 @@ class BookDetail(generics.RetrieveAPIView):
 class CreateBook(generics.CreateAPIView):
     name = 'create book'
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, OnlyAuthorCanCreateABook, ]
 
     def perform_create(self, serializer):
         if serializer.is_valid():

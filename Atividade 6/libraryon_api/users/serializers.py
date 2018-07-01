@@ -3,7 +3,6 @@ import re
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .permissions import *
 from .models import *
 
 # SETTINGS
