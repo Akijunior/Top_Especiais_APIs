@@ -52,3 +52,13 @@ class Genre(models.Model):
 
     class Meta:
         ordering = ('name', )
+
+
+
+def post_save_reply(created, instance, **kwargs):
+    Score.objects.exclude(pk=instance.pk).filter(lector=instance.lector.pk, book=instance.book.pk).delete()
+
+models.signals.post_save.connect(
+    post_save_reply, sender=Score, dispatch_uid='post_save_reply'
+)
+

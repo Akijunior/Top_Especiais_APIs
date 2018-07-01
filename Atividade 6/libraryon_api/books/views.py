@@ -1,13 +1,9 @@
-from django_filters import NumberFilter, DateTimeFilter, AllValuesFilter
 from django_filters.rest_framework import *
 from rest_framework import filters, generics
 from rest_framework.throttling import ScopedRateThrottle
+
 from books.permissions import *
 from .serializers import *
-from rest_framework.renderers import DocumentationRenderer
-from django.http import HttpRequest, HttpResponse
-from rest_framework import status
-
 
 
 class ScoreFilter(filters.BaseFilterBackend):
@@ -27,7 +23,8 @@ class ScoreFilter(filters.BaseFilterBackend):
     class Meta:
         model = Score
         fields = ('score', 'from_score_date', 'to_score_date',
-              'min_score', 'max_score', 'lector_name', 'book_title')
+                  'min_score', 'max_score', 'lector_name', 'book_title')
+
 
 class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
@@ -35,18 +32,21 @@ class BookList(generics.ListAPIView):
     name = 'book-list'
     permission_classes = [permissions.IsAuthenticated, OnlyAuthorCanCreateABook, ViewBookPermissions]
     throttle_scope = 'books-list'
-    throttle_classes = [ScopedRateThrottle,]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, filters.DjangoObjectPermissionsFilter,]
+    throttle_classes = [ScopedRateThrottle, ]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,
+                       filters.DjangoObjectPermissionsFilter, ]
 
     filter_fields = ('title', 'year', 'price')
     search_fields = ('^title', 'year')
     ordering_fields = ('title', 'year')
 
+
 class BookDetail(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     name = 'book-detail'
-    permission_classes = [permissions.IsAuthenticated, IsAuthorOfBookOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated, IsAuthorOfBookOrReadOnly, ]
+
 
 class CreateBook(generics.CreateAPIView):
     name = 'create book'
@@ -83,20 +83,22 @@ class CreateGenre(generics.CreateAPIView):
     permission_classes = [IsAuthorOfBookOrReadOnly, permissions.IsAdminUser]
 
     def perform_create(self, serializer):
-            if serializer.is_valid():
-                serializer.save()             
+        if serializer.is_valid():
+            serializer.save()
             ##return HttpResponse({"reason":"must be an Author to create genre"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class ScoreList(generics.ListAPIView):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
     name = 'score-list'
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
     throttle_scope = 'scores-list'
-    throttle_classes = (ScopedRateThrottle, )
+    throttle_classes = (ScopedRateThrottle,)
 
     def perform_create(self, serializer):
         serializer.save(lector=self.request.user)
+
 
 class ScoreDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Score.objects.all()
@@ -104,11 +106,12 @@ class ScoreDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'score-detail'
     permission_classes = [permissions.IsAuthenticated, OnlyTheLectorWhoAssignedTheScoreCanEditIt]
 
+
 class CreateScore(generics.CreateAPIView):
-    name = 'create score'
+    name = 'create-score'
     serializer_class = ScoreSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(lector=self.request.user)

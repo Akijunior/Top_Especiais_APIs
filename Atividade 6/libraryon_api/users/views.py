@@ -75,7 +75,7 @@ class LectorDetail(generics.RetrieveAPIView):
 class LectorCreate(generics.CreateAPIView):
     queryset = Lector.objects.all()
     name = "new-lector"
-    serializer_class = LectorSerializer
+    serializer_class = CreateLectorSerializer
     permission_classes = []
     authentication_classes = []
 

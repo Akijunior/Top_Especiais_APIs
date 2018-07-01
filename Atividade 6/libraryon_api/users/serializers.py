@@ -11,7 +11,7 @@ VALIDATE_VALID_EMAIL_REGEX = True
 EMAIL_VALIDATE_REGEX = r"[^@]+@[^@]+\.[^@]+"
 MIN_PASSWORD_LENGHT = 4
 
-class AuthorSerializer(serializers.ModelSerializer):
+class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
 
         model = Author
@@ -95,7 +95,13 @@ class CreateAuthorSerializer(serializers.ModelSerializer):
         return author
 
 
-class LectorSerializer(serializers.ModelSerializer):
+class LectorSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Lector
+        fields = ('url', 'pk', 'name', 'age', 'email')
+
+
+class CreateLectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lector
         fields = ('url', 'pk', 'name', 'age', 'email', 'password')
@@ -111,7 +117,6 @@ class LectorSerializer(serializers.ModelSerializer):
 
         if User.objects.filter(username=email).exists():
             raise serializers.ValidationError("this email has already token")
-
         return email
 
     def validate_password(self, password):

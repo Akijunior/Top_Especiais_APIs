@@ -20,7 +20,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     def validate_amount_pages(self, amount_pages):
         if amount_pages < 0:
-            raise serializers.ValidationError("amont pages cannot be negative value")
+            raise serializers.ValidationError("amount pages cannot be negative value")
 
         return amount_pages
 
