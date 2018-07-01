@@ -7,7 +7,7 @@ class Author(models.Model):
     books = models.ManyToManyField('books.Book')
     email = models.CharField(max_length=150)
     password = models.CharField(max_length=150)
-    auth_profile = models.OneToOneField('auth.User', on_delete=models.CASCADE)
+    auth_profile = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='author')
 
     def __str__(self):
         return self.name
@@ -21,7 +21,7 @@ class Lector(models.Model):
     age = models.IntegerField()
     email = models.CharField(max_length=150)
     password = models.CharField(max_length=150)
-    lector_profile = models.OneToOneField('auth.User', on_delete=models.CASCADE)
+    lector_profile = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='lector')
     def __str__(self):
         return self.name
 

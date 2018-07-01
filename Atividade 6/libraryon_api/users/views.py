@@ -27,9 +27,9 @@ class AuthorList(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-list'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
-
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,)
+    #permission_classes = [permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope]
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,]
 
     filter_fields = ('name', 'age')
     search_fields = ('^name',)
@@ -40,21 +40,36 @@ class AuthorDetail(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-detail'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+    #permission_classes = [permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope,]
+    permission_classes = [permissions.IsAuthenticated,]
+
+class AuthorCreate(generics.CreateAPIView):
+    queryset = Lector.objects.all()
+    name = "new-author"
+    serializer_class = CreateAuthorSerializer
+    permission_classes = [permissions.IsAdminUser, ]
+
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save()
 
 
 class LectorList(generics.ListAPIView):
     queryset = Lector.objects.all()
     serializer_class = LectorSerializer
     name = 'lector-list'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+#    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,]
+
 
 
 class LectorDetail(generics.RetrieveAPIView):
     queryset = Lector.objects.all()
     serializer_class = LectorSerializer
     name = 'lector-detail'
-    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+#    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class LectorCreate(generics.CreateAPIView):
@@ -68,23 +83,11 @@ class LectorCreate(generics.CreateAPIView):
         if serializer.is_valid():
             serializer.save()
 
-
-class AuthorCreate(generics.CreateAPIView):
-    queryset = Lector.objects.all()
-    name = "new-author"
-    serializer_class = AuthorSerializer
-    permission_classes = [permissions.IsAdminUser, ]
-    authentication_classes = []
-
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save()
-
-
 class CustomAuthToken(ObtainAuthToken):
 
     throttle_scope = 'api-token'
-    throttle_classes = (ScopedRateThrottle, )
+    throttle_classes = [ScopedRateThrottle]
+    name = 'obtain custom auth token'
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request':request})

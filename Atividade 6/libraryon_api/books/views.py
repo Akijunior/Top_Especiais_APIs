@@ -6,8 +6,11 @@ from rest_framework.throttling import ScopedRateThrottle
 from books.permissions import *
 from .serializers import *
 
-
 from rest_framework.renderers import DocumentationRenderer
+
+from django.http import HttpRequest, HttpResponse
+from rest_framework import status
+
 
 
 class ScoreFilter(filters.BaseFilterBackend):
@@ -68,7 +71,7 @@ class GenreList(generics.ListAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     name = 'genre-list'
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, )
 
     filter_fields = ('name',)
@@ -80,8 +83,21 @@ class GenreDetail(generics.RetrieveAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     name = 'genre-detail'
-    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser,)
+    permission_classes = [permissions.IsAuthenticated]
 
+
+class CreateGenre(generics.CreateAPIView):
+    serializer_class = CreateGenreSerializer
+    name = 'create-genre'
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        if Author.objects.filter(auth_profile=self.request.user).exists():
+            if serializer.is_valid():
+                serializer.save()
+                
+        else:
+            return HttpResponse({"reason":"must be an Author to create genre"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class ScoreList(generics.ListCreateAPIView):
     queryset = Score.objects.all()
@@ -93,7 +109,6 @@ class ScoreList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(lector=self.request.user)
-
 
 class ScoreDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Score.objects.all()
