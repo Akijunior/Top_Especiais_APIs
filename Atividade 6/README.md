@@ -1,6 +1,10 @@
 # (6ª atividade - Libraryon API) 
 
 
+# Libraryon API
+## Plataforma de compartilhamento de livros por autores (Authors) que permite que estes tenham uma gerência sobre seus livros, bem como para que leitores (Lectors) possam visualizar as publicações dos autores, e avaliá-las (Score).
+
+
 # Desenvolva uma API Restful de um possível negócio usando Django Rest Framework de acordo com os seguintes critérios:
 
 ## 1. (0,5) A API deve possuir pelo menos 4 entidades relevantes e relacionadas via mapeamento objeto relacional a nível de banco e relacionadas segundo o padrão HATEOS;
