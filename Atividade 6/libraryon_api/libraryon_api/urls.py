@@ -27,7 +27,7 @@ urlpatterns = [
 	path('api/token/custom', CustomAuthToken.as_view(), name=CustomAuthToken.name),
 
     ## OAuth
-    path('api/token/o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('o/', include('rest_framework_social_oauth2.urls')),
     path('social/<backend>/', exchange_token),
 
     ## JWT 

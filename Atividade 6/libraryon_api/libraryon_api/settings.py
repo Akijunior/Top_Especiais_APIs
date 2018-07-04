@@ -40,23 +40,20 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'social_django',
     'crispy_forms',
     'django_filters',
     'rest_framework_swagger',
+
+    'social_django',
     'oauth2_provider',
+    'rest_framework_social_oauth2',
+    
+    
     'django_nose',
 ]
 
-OAUTH2_PROVIDER = {
-    # this is the list of available scopes
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
-}
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5,
-
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
@@ -80,6 +77,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_THROTTLE_CLASSES': (
@@ -92,8 +90,10 @@ REST_FRAMEWORK = {
         'books-list': '20/hour',
         'scores-list': '40/hour',
         'create-profile-throttle': '15/hour',
-        'api-token': '10/hour',
+        'token': '5/hour',
     },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
 }
 
 
@@ -108,6 +108,8 @@ for key in ['GOOGLE_OAUTH2_KEY',
             'FACEBOOK_KEY',
             'FACEBOOK_SECRET']:
     exec("SOCIAL_AUTH_{key} = os.environ.get('{key}', '')".format(key=key))
+
+CSRF_COOKIE_SECURE = True
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
