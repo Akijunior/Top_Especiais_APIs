@@ -61,6 +61,8 @@ class LectorCreate(generics.CreateAPIView):
     queryset = Lector.objects.all()
     name = "new-lector"
     serializer_class = CreateLectorSerializer
+    throttle_scope = 'create-profile-throttle'
+    throttle_classes = [ScopedRateThrottle, ]
     permission_classes = []
     authentication_classes = []
 
@@ -72,7 +74,7 @@ class LectorCreate(generics.CreateAPIView):
 class CustomAuthToken(ObtainAuthToken):
     throttle_scope = 'api-token'
     throttle_classes = [ScopedRateThrottle]
-    name = 'obtain custom auth token'
+    name = 'obtain_custom_auth_token'
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
