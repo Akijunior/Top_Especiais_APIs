@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
@@ -5,6 +6,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
+from libraryon_api.oauth_token import exchange_token
 from users.views import CustomAuthToken
 schema_view = get_swagger_view(title='Libraryon API Library')
 
@@ -25,7 +27,8 @@ urlpatterns = [
 	path('api/token/custom', CustomAuthToken.as_view(), name=CustomAuthToken.name),
 
     ## OAuth
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('api/token/o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('social/<backend>/', exchange_token),
 
     ## JWT 
     path('api/token/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
