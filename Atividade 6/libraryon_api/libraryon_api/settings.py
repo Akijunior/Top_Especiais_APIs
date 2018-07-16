@@ -109,7 +109,7 @@ for key in ['GOOGLE_OAUTH2_KEY',
             'FACEBOOK_SECRET']:
     exec("SOCIAL_AUTH_{key} = os.environ.get('{key}', '')".format(key=key))
 
-CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
