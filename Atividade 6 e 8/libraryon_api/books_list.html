@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My second Vue app</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <style type="text/css">
+        .book,
+        .pagination {
+            width: 80%;
+            margin: auto;
+        }
+
+        .pagination {
+            margin: 15px;
+            text-align: center
+        }
+
+        body {
+            font-family: arial;
+        }
+
+        h2 {
+            border-bottom: 1px dotted gray;
+        }
+
+        .body {
+            text-align: justify;
+        }
+
+        .user {
+            text-align: right;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div class="green">
+        <h1 class="white-text container">Livros</h1>
+    </div>
+
+    <div class="book container" v-for="book in books">
+        <div v-if="!book.editing">
+            <h2>{{ book.title }}</h2>
+
+            <p class="body">{{ book.description }}</p>
+            <div>
+                <button class="red waves-effect waves-light btn" @click="deleteBook(book)">
+                    <i class="material-icons left">close</i>Excluir
+                </button>
+                <button class="waves-effect waves-light btn" @click="editBook(book)">
+                    <i class="material-icons left">cloud</i>Editar
+                </button>
+            </div>
+
+        </div>
+        <div v-else>
+            <h2>Editando Livro</h2>
+            <input width="100%" v-model="book.title"><br>
+            <textarea v-model="book.body" rows="5" cols=100></textarea><br>
+            <p class="user">{{ book.title }}</p>
+            <div>
+                <button @click="confirmUpdate(book)">Atualizar</button>
+                <button @click="cancelEditing(book)">Cancelar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="pagination">
+        <button class="waves-effect waves-light btn" @click="getBooks(pagination.previous)"
+                :disabled="!pagination.previous">
+            <i class="material-icons left">chevron_left</i>Previous
+        </button>
+        <button class="waves-effect waves-light btn" @click="getBooks(pagination.next)" :disabled="!pagination.next">
+            <i class="material-icons left">chevron_right</i>Next
+        </button>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            books: [],
+            pagination: {
+                count: 0,
+                next: '',
+                previous: ''
+            }
+        },
+        mounted() {
+            this.getBooks('http://localhost/books')
+        },
+        methods: {
+            deleteBook: function (book) {
+                var index = app.books.indexOf(book)
+                app.books.splice(index)
+            },
+
+            deleteBook: function (book) {
+                var index = app.books.indexOf(book)
+
+                axios.delete('http://localhost/books/' + book.id + '/')
+                    .then(function (response) {
+                        app.books.splice(index, 1)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            },
+            editBook: function (book) {
+                book.editing = true
+            },
+
+            cancelEditing: function (book) {
+                book.editing = false
+            },
+
+            confirmUpdate: function (book) {
+                axios.put('http://localhost/books/' + book.id + '/', book)
+
+                    .then(function (response) {
+
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+                book.editing = false
+            },
+
+            getBooks: function (url) {
+                axios.get(url)
+                    .then(function (response) {
+
+                        response.data.results.map(function (book) {
+                            book.editing = false;
+                        })
+                        app.books = response.data.results
+
+                        var pagination = {
+                            count: response.data.count,
+                            next: response.data.next,
+                            previous: response.data.previous,
+                            pageSize: 5,
+                            total: Math.round(response.data.count / 5)
+                        }
+                        app.pagination = pagination
+                    })
+            },
+
+        }
+
+    })
+</script>
+</body>
+
+</html>

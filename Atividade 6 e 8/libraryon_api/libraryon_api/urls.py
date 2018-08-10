@@ -17,7 +17,6 @@ urlpatterns = [
     path('', include('books.urls'), name='books'),
     path('docs/', schema_view),
 
-
     ##    Authentication Paths    ##		
 
     ## Session
