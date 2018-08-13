@@ -45,8 +45,8 @@
         <h1 class="white-text container">Livros</h1>
     </div>
 
-    <div class="book container" v-for="book in books">
-        <div v-if="!book.editing">
+    <div class="container row" v-for="book in books">
+        <div class="col s4" v-if="!book.editing">
             <h2>{{ book.title }}</h2>
 
             <p class="body">{{ book.description }}</p>

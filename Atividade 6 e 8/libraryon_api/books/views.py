@@ -30,7 +30,7 @@ class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     name = 'book-list'
-    permission_classes = [permissions.IsAuthenticated, ]
+    # permission_classes = [permissions.IsAuthenticated, ]
     throttle_scope = 'books-list'
     throttle_classes = [ScopedRateThrottle, ]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, ]
