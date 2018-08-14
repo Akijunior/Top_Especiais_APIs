@@ -6,50 +6,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="static/css/index.css">
     <script src="vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
-    <style type="text/css">
-        .book,
-        .pagination {
-            width: 80%;
-            margin: auto;
-        }
-
-        .pagination {
-            margin: 15px;
-            text-align: center
-        }
-
-        body {
-            font-family: arial;
-        }
-
-        h2 {
-            border-bottom: 1px dotted gray;
-        }
-
-        .body {
-            text-align: justify;
-        }
-
-        .user {
-            text-align: right;
-            font-style: italic;
-        }
-    </style>
 </head>
 
 <body>
 <div id="app">
-    <div class="green">
-        <h1 class="white-text container">Livros</h1>
-    </div>
+    <nav>
+        <div class="nav-wrapper green">
+            <div class="container">
+                <a href="#!" class="brand-logo">Libraryon</a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="sass.html">Autores</a></li>
+                    <li><a href="books_list.html">Livros</a></li>
+                    <li><a href="login.html">
+                        <i class="material-icons left">sentiment_very_satisfied</i> Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="container row" v-for="book in books">
         <div class="col s4" v-if="!book.editing">
-            <h2>{{ book.title }}</h2>
+            <h4><b>Título:</b> {{ book.title }}</h4>
 
-            <p class="body">{{ book.description }}</p>
+            <p class="body"><b>Descrição:</b> {{ book.description }}</p>
             <div>
                 <button class="red waves-effect waves-light btn" @click="deleteBook(book)">
                     <i class="material-icons left">close</i>Excluir
@@ -63,7 +45,7 @@
         <div v-else>
             <h2>Editando Livro</h2>
             <input width="100%" v-model="book.title"><br>
-            <textarea v-model="book.body" rows="5" cols=100></textarea><br>
+            <textarea v-model="book.description" rows="5" cols=100></textarea><br>
             <p class="user">{{ book.title }}</p>
             <div>
                 <button @click="confirmUpdate(book)">Atualizar</button>
@@ -125,8 +107,7 @@
             },
 
             confirmUpdate: function (book) {
-                axios.put('http://localhost/books/' + book.id + '/', book)
-
+                axios.put('http://localhost/books/' + book.id, book)
                     .then(function (response) {
 
                     })
