@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from .models import *
 import datetime
 
-class BookSerializer(serializers.HyperlinkedModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book

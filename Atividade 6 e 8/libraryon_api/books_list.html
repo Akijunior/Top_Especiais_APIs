@@ -9,11 +9,6 @@
     <link type="text/css" rel="stylesheet" href="static/css/index.css">
     <script src="vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".dropdown-trigger").dropdown();
-        });
-    </script>
 </head>
 
 <body>
@@ -24,8 +19,8 @@
                 <a href="#!" class="brand-logo">Libraryon</a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="sass.html">Autores</a></li>
-                    <li><a href="badges.html">Livros</a></li>
-                    <li><a href="badges.html">
+                    <li><a href="books_list.html">Livros</a></li>
+                    <li><a href="login.html">
                         <i class="material-icons left">sentiment_very_satisfied</i> Login</a></li>
                 </ul>
             </div>
@@ -34,9 +29,9 @@
 
     <div class="container row" v-for="book in books">
         <div class="col s4" v-if="!book.editing">
-            <h2>{{ book.title }}</h2>
+            <h4><b>Título:</b> {{ book.title }}</h4>
 
-            <p class="body">{{ book.description }}</p>
+            <p class="body"><b>Descrição:</b> {{ book.description }}</p>
             <div>
                 <button class="red waves-effect waves-light btn" @click="deleteBook(book)">
                     <i class="material-icons left">close</i>Excluir
@@ -50,7 +45,7 @@
         <div v-else>
             <h2>Editando Livro</h2>
             <input width="100%" v-model="book.title"><br>
-            <textarea v-model="book.body" rows="5" cols=100></textarea><br>
+            <textarea v-model="book.description" rows="5" cols=100></textarea><br>
             <p class="user">{{ book.title }}</p>
             <div>
                 <button @click="confirmUpdate(book)">Atualizar</button>
@@ -112,8 +107,7 @@
             },
 
             confirmUpdate: function (book) {
-                axios.put('http://localhost/books/' + book.id + '/', book)
-
+                axios.put('http://localhost/books/' + book.id, book)
                     .then(function (response) {
 
                     })
