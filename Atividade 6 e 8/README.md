@@ -1,5 +1,10 @@
-# (6ª atividade - Libraryon API) 
+# (8ª atividade - Libraryon API com Client) 
 
+## Parte API do projeto.
+Para detalhes a respeito do cliente: [Libraryon CLI](https://github.com/jhonatanmsc/Libraryon-Client)
+
+
+# (6ª atividade - Libraryon API) 
 
 # Libraryon API
 ## Plataforma de compartilhamento de livros por autores (Authors) que permite que estes tenham uma gerência sobre seus livros, bem como para que leitores (Lectors) possam visualizar as publicações dos autores, e avaliá-las (Score).
