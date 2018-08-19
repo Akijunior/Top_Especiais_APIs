@@ -6,11 +6,13 @@ from rest_framework.request import Request
 from .models import *
 import datetime
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ('url', 'title', 'description', 'isbn', 'edition', 'year',
+                  'amount_pages', 'price', 'age_range', 'authors', 'genres', 'thumb',
+                  'score_average')
 
     def validate_year(self, year):
         if year < 0.0:
@@ -37,11 +39,11 @@ class CreateGenreSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description')
 
 
-class GenreSerializer(serializers.ModelSerializer):
+class GenreSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = ('url', 'name', 'description')
 
     def validate_name(self,name):
         return name
