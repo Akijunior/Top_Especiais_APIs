@@ -19,6 +19,7 @@ django-oauth-toolkit==1.2.0
 django-rest-framework-social-oauth2==1.1.0
 django-rest-swagger==2.2.0
 djangorestframework==3.8.2
+djangorestframework-jwt==1.11.0
 djangorestframework-oauth==1.1.0
 djangorestframework-simplejwt==3.2.3
 httplib2==0.11.3
@@ -34,6 +35,8 @@ nose==1.3.7
 numpy==1.14.3
 oauthlib==2.1.0
 openapi-codec==1.3.2
+Pillow==5.2.0
+psycopg2==2.7.5
 Pygments==2.2.0
 PyJWT==1.6.4
 pyparsing==2.2.0

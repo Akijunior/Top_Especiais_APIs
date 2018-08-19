@@ -1,14 +1,18 @@
-from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
 from rest_framework_swagger.views import get_swagger_view
+
+from django.conf.urls.static import static
+from django.conf import settings
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from libraryon_api.oauth_token import exchange_token
 from users.views import CustomAuthToken
 schema_view = get_swagger_view(title='Libraryon API Library')
+
+admin.autodiscover()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +38,8 @@ urlpatterns = [
     path('api/token/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

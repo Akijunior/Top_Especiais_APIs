@@ -12,8 +12,8 @@ class AuthorList(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-list'
-    # permission_classes = [permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope]
-    permission_classes = [permissions.IsAuthenticated]
+    # # permission_classes = [permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope]
+    # permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, ]
 
     filter_fields = ('name', 'age')
@@ -21,19 +21,19 @@ class AuthorList(generics.ListAPIView):
     ordering_fields = ('name', 'age')
 
 
-class AuthorDetail(generics.RetrieveAPIView):
+class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     name = 'author-detail'
-    # permission_classes = [permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope,]
-    permission_classes = [permissions.IsAuthenticated, ]
+    # # permission_classes = [permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope,]
+    # permission_classes = [permissions.IsAuthenticated, ]
 
 
 class AuthorCreate(generics.CreateAPIView):
     queryset = Lector.objects.all()
     name = "new-author"
     serializer_class = CreateAuthorSerializer
-    permission_classes = [permissions.IsAdminUser, ]
+    # permission_classes = [permissions.IsAdminUser, ]
 
     def perform_create(self, serializer):
         if serializer.is_valid():
@@ -44,17 +44,17 @@ class LectorList(generics.ListAPIView):
     queryset = Lector.objects.all()
     serializer_class = LectorSerializer
     name = 'lector-list'
-    #    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
-    permission_classes = [permissions.IsAuthenticated]
+    #    permission_classe s = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+    # permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, ]
 
 
-class LectorDetail(generics.RetrieveAPIView):
+class LectorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lector.objects.all()
     serializer_class = LectorSerializer
     name = 'lector-detail'
-    #    permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
-    permission_classes = [permissions.IsAuthenticated]
+    #    # permission_classes = (permissions.IsAuthenticated, ReadUserOnly, TokenHasReadWriteScope, )
+    # permission_classes = [permissions.IsAuthenticated]
 
 
 class LectorCreate(generics.CreateAPIView):
@@ -63,7 +63,7 @@ class LectorCreate(generics.CreateAPIView):
     serializer_class = CreateLectorSerializer
     throttle_scope = 'create-profile-throttle'
     throttle_classes = [ScopedRateThrottle, ]
-    permission_classes = []
+    # permission_classes = []
     authentication_classes = []
 
     def perform_create(self, serializer):

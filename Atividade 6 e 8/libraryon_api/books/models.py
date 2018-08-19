@@ -22,6 +22,10 @@ class Book(models.Model):
     age_range = models.CharField(max_length=2, choices=AGE_RANGE, default='F')
     authors = models.ManyToManyField('users.Author')
     genres = models.ManyToManyField('Genre')
+    thumb = models.ImageField(verbose_name='Imagem representativa',
+                              upload_to='core/images', default='book.png', blank=True, null=True)
+    score_average = models.DecimalField(decimal_places=2, validators=[
+            MaxValueValidator(10.0), MinValueValidator(0.0)], max_digits=4, default=0.0)
 
     def __str__(self):
         return self.title
@@ -57,9 +61,17 @@ class Genre(models.Model):
         ordering = ('name', )
 
 
-
 def post_save_reply(created, instance, **kwargs):
-    Score.objects.exclude(pk=instance.pk).filter(lector=instance.lector.pk, book=instance.book.pk).delete()
+    book = Book.objects.get(pk=instance.book.pk)
+    Score.objects.exclude(pk=instance.pk).filter(lector=instance.lector.pk, book=book.pk).delete()
+    amount = book.scores.count()
+    total_score = 0
+    for score in book.scores.all():
+        total_score += score.score
+    book.score_average = total_score/amount
+    book.save()
+
+
 
 def book_save_reply(created, instance, **kwargs):
     authors = instance.authors.all()
