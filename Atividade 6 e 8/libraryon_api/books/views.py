@@ -61,7 +61,7 @@ class GenreList(generics.ListAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     name = 'genre-list'
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter, ]
 
     filter_fields = ('name',)
@@ -85,6 +85,16 @@ class CreateGenre(generics.CreateAPIView):
         if serializer.is_valid():
             serializer.save()
             ##return HttpResponse({"reason":"must be an Author to create genre"}, status=status.HTTP_401_UNAUTHORIZED)
+
+class NewScoreList(generics.ListCreateAPIView):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
+    name = 'new-score-list'
+
+class NewScoreDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
+    name = 'new-score-detail'
 
 
 class ScoreList(generics.ListAPIView):

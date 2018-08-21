@@ -11,6 +11,9 @@ urlpatterns = [
     path('genres/<int:pk>', views.GenreDetail.as_view(), name=views.GenreDetail.name),
     path('genres/create/', views.CreateGenre.as_view(), name=views.CreateGenre.name),
 
+    path('new-scores/', views.NewScoreList.as_view(), name=views.NewScoreList.name),
+    path('new-scores/<int:pk>', views.NewScoreDetail.as_view(), name=views.NewScoreDetail.name),
+
     path('scores/', views.ScoreList.as_view(), name=views.ScoreList.name),
     path('scores/<int:pk>', views.ScoreDetail.as_view(), name=views.ScoreDetail.name),
 	path('scores/create/', views.CreateScore.as_view(), name=views.CreateScore.name),    

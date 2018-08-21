@@ -10,6 +10,12 @@ VALIDATE_VALID_EMAIL_REGEX = True
 EMAIL_VALIDATE_REGEX = r"[^@]+@[^@]+\.[^@]+"
 MIN_PASSWORD_LENGHT = 4
 
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'pk', 'username', 'password')
+
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
 

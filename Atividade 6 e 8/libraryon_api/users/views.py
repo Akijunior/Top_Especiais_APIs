@@ -8,6 +8,18 @@ from books.views import *
 from .serializers import *
 
 
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-list'
+
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-detail'
+
+
 class AuthorList(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
@@ -93,9 +105,11 @@ class ApiRoot(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return Response({
-            'users': reverse(AuthorList.name, request=request),
+            'users': reverse(UserList.name, request=request),
+            'authors': reverse(AuthorList.name, request=request),
             'lectors': reverse(LectorList.name, request=request),
             'books': reverse(BookList.name, request=request),
             'genres': reverse(GenreList.name, request=request),
             'scores': reverse(ScoreList.name, request=request),
+            'new-scores': reverse(NewScoreList.name, request=request),
         })
