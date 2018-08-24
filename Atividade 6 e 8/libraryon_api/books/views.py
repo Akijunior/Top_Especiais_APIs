@@ -1,6 +1,7 @@
 from django_filters.rest_framework import *
 from rest_framework import filters, generics
 from rest_framework.throttling import ScopedRateThrottle
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from books.permissions import *
 from .serializers import *
@@ -109,7 +110,8 @@ class ScoreDetail(generics.RetrieveUpdateDestroyAPIView):
 class CreateScore(generics.CreateAPIView):
     name = 'create-score'
     serializer_class = ScoreSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def perform_create(self, serializer):
         if serializer.is_valid():

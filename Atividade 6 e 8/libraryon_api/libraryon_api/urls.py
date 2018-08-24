@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from rest_framework_swagger.views import get_swagger_view
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
@@ -29,7 +30,10 @@ urlpatterns = [
     path('o/', include('rest_framework_social_oauth2.urls')),
     path('social/<backend>/', exchange_token),
 
-    ## JWT 
+    ## JWT
+    path('auth/obtain_token/', obtain_jwt_token),
+    path('auth/refresh_token/', refresh_jwt_token),
+
     path('api/token/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),

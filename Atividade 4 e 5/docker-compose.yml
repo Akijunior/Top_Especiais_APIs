@@ -1,0 +1,29 @@
+version: '3'
+volumes:
+  pgdata:
+services:
+  python:
+    # image: python:3.6
+    # especificar contexto da build
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./app:/app
+    ports:
+      - 8000:8000 # usar a porta 8000 para mapear a porta 8000
+  postgres: # ver docker hub postgres para mais informações
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: web_apis
+      POSTGRES_PASS: admin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+#    command: sleep infinity
+#    command: pip install -r requirements.txt && python manage.py runserver
+
+# command tbm tem cd /app &&
