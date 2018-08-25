@@ -90,10 +90,11 @@ REST_FRAMEWORK = {
         'books-list': '20/hour',
         'scores-list': '40/hour',
         'create-profile-throttle': '15/hour',
+        'api-token': '80/hour',
         'token': '5/hour',
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5,
+    'PAGE_SIZE': 6,
 }
 
 

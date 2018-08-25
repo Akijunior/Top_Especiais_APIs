@@ -11,7 +11,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Book
         fields = ('url', 'title', 'description', 'isbn', 'edition', 'year',
-                  'amount_pages', 'price', 'age_range', 'authors', 'genres', 'thumb',
+                  'amount_pages', 'price', 'age_range', 'genres',
                   'score_average')
 
     def validate_year(self, year):

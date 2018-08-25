@@ -4,7 +4,7 @@ from django.db import models
 class Author(models.Model):
     name = models.CharField(max_length=150)
     age = models.IntegerField()
-    books = models.ManyToManyField('books.Book')
+    books = models.ManyToManyField('books.Book', null=True, blank=True)
     email = models.CharField(max_length=150)
     password = models.CharField(max_length=150)
     auth_profile = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='author')
@@ -20,7 +20,7 @@ class Lector(models.Model):
     name = models.CharField(max_length=150)
     age = models.IntegerField()
     email = models.CharField(max_length=150)
-    favorite_books = models.ManyToManyField('books.Book')
+    favorite_books = models.ManyToManyField('books.Book', null=True, blank=True)
     password = models.CharField(max_length=150)
     lector_profile = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='lector')
     def __str__(self):

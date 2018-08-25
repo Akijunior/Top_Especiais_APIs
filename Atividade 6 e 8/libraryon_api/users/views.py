@@ -93,9 +93,20 @@ class CustomAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+        user_type = ''
+        auth_user = Author.objects.get(name=user.username)
+        user = User.objects.get(username=user.username)
+        if user.is_staff:
+            user_type = 'admin'
+        elif auth_user:
+            user_type = 'autor'
+        else:
+            user_type = 'leitor'
+
         return Response({
-            'user_id': user.id,
-            'user_name': user.username,
+            'user_id': auth_user.pk,
+            'user_type': user_type,
+            'user_name': auth_user.name,
             'token': token.key,
         })
 

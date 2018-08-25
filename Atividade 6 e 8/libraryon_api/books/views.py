@@ -1,7 +1,7 @@
 from django_filters.rest_framework import *
 from rest_framework import filters, generics
 from rest_framework.throttling import ScopedRateThrottle
-
+from users.models import Author
 from books.permissions import *
 from .serializers import *
 
@@ -123,4 +123,5 @@ class CreateScore(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         if serializer.is_valid():
-            serializer.save(lector=self.request.user)
+            mLector = Author.objects.get(pk=int(self.request.data['lector']));
+            serializer.save(lector=mLector.auth_profile)
