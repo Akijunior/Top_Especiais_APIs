@@ -1,0 +1,28 @@
+version: '3'
+volumes:
+  pgdata:
+services:
+  python:
+#    image: python:3.6
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    volumes:
+      - ./app:/app
+    ports:
+      - 8000:8000
+    command: "python manage.py runserver 0.0.0.0:8000"
+    # comando do entrypoint, para conseguir rodar o bash sem conflito de server
+  postgres:
+    image: postgres:10.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: web_apis
+      POSTGRES_PASS: admin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+#    command: sleep infinity
+
+# command tbm tem cd /app &&
